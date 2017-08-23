@@ -45,14 +45,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @TargetApi(Build.VERSION_CODES.KITKAT)
     public void makeRequest(String username, String password) throws IOException
     {
-        /*CustomCurl customCurl = new CustomCurl(getString(R.string.individual_id_from_login_password));
-        String response = customCurl.getIDFromLogin(username,password);*/
-        MultipartUtility multipartUtility = new MultipartUtility(getString(R.string.individual_id_from_login_password));
+        CustomCurl customCurl = new CustomCurl(getString(R.string.individual_id_from_login_password_url));
+        String response = customCurl.getIDFromLogin(username,password);
+        /*MultipartUtility multipartUtility = new MultipartUtility(getString(R.string.individual_id_from_login_password));
         multipartUtility.addFormField("login",username);
         multipartUtility.addFormField("password",password);
         byte[] bytes = multipartUtility.finish();
         String response = new String(bytes, StandardCharsets.UTF_8);
-        Log.v("PRINT RESPONSE","Response");
+        Log.v("PRINT RESPONSE","Response");*/
+        XMLParser xmlParser = new XMLParser();
+        xmlParser.writeToFile(getString(R.string.individual_id_from_login_password),response,this);
         printResponse(response);
     }
 
