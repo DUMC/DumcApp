@@ -1,6 +1,8 @@
 package my.dumc.dumc;
 
 import android.content.Context;
+import android.os.Build;
+import android.support.annotation.RequiresApi;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -8,9 +10,12 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.StringReader;
+import java.net.URL;
+import java.nio.charset.StandardCharsets;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -54,5 +59,19 @@ public class XMLParser
         FileOutputStream fileOutputStream = context.openFileOutput(filename, context.MODE_PRIVATE);
         fileOutputStream.write(response.getBytes());
         fileOutputStream.close();
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
+    public String sendFileRequest(String urlString, Context context) throws IOException
+    {
+        final File uploadFile = new File(context.getFilesDir().getAbsoluteFile() + "/create_attendance.xml");
+
+        URL url = new URL(urlString);
+        MultipartUtility multipartUtility = new MultipartUtility(urlString);
+        multipartUtility.addFilePart("create_attendance",uploadFile);
+        byte[] bytes = multipartUtility.finish();
+        String result = new String(bytes, StandardCharsets.UTF_8);
+
+        return result;
     }
 }
