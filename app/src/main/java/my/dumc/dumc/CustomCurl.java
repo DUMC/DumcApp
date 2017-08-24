@@ -20,6 +20,8 @@ import javax.net.ssl.HttpsURLConnection;
 public class CustomCurl
 {
     private final HttpURLConnection connection;
+    private static final int CONNECT_TIMEOUT = 15000;
+    private static final int READ_TIMEOUT = 10000;
 
     public CustomCurl(final String urlString) throws IOException
     {
@@ -28,8 +30,9 @@ public class CustomCurl
         String auth = "dumcapp:JesusLORD0fa11!";
         byte[] authEncByte = Base64.encode(auth.getBytes(), Base64.DEFAULT);
         String authEncString = new String(authEncByte);
-
         connection = (HttpsURLConnection)(url).openConnection();
+        connection.setConnectTimeout(CONNECT_TIMEOUT);
+        connection.setReadTimeout(READ_TIMEOUT);
         connection.setRequestProperty("Authorization", "Basic " + authEncString);
         connection.setRequestMethod("POST");
     }

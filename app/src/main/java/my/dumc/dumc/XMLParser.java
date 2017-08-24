@@ -14,7 +14,6 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.StringReader;
-import java.net.URL;
 import java.nio.charset.StandardCharsets;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -27,20 +26,29 @@ import javax.xml.parsers.ParserConfigurationException;
 
 public class XMLParser
 {
-    public Element XMLParserString(String xml) throws ParserConfigurationException, IOException, SAXException
+    private Element rootElement;
+    private String xmlResponse;
+
+    public XMLParser(String xml, File xmlFile, String xmlFileName) throws ParserConfigurationException, IOException, SAXException
     {
-        String getXML = xml;
+        xmlResponse = xml;
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         DocumentBuilder builder = factory.newDocumentBuilder();
-        Document document = builder.parse(new InputSource(new StringReader(getXML)));
-        //Document document = builder.parse(new File("file.xml"));
-        Element rootElement = document.getDocumentElement();
-        return rootElement;
+        Document document;
+        if(xmlFile != null)
+        {
+            document = builder.parse(new File(xmlFileName));
+        }
+        else
+        {
+            document = builder.parse(new InputSource(new StringReader(xmlResponse)));
+        }
+        rootElement = document.getDocumentElement();
     }
 
-    protected String getString(String tagName, Element element)
+    protected String getXMLValues(String tagName)
     {
-        NodeList list = element.getElementsByTagName(tagName);
+        NodeList list = rootElement.getElementsByTagName(tagName);
         if (list != null && list.getLength() > 0)
         {
             NodeList subList = list.item(0).getChildNodes();
@@ -54,10 +62,10 @@ public class XMLParser
         return null;
     }
 
-    protected void writeToFile(String filename, String response, Context context) throws IOException
+    protected void writeToFile(String filename, Context context) throws IOException
     {
         FileOutputStream fileOutputStream = context.openFileOutput(filename, context.MODE_PRIVATE);
-        fileOutputStream.write(response.getBytes());
+        fileOutputStream.write(xmlResponse.getBytes());
         fileOutputStream.close();
     }
 
@@ -66,7 +74,6 @@ public class XMLParser
     {
         final File uploadFile = new File(context.getFilesDir().getAbsoluteFile() + "/create_attendance.xml");
 
-        URL url = new URL(urlString);
         MultipartUtility multipartUtility = new MultipartUtility(urlString);
         multipartUtility.addFilePart("create_attendance",uploadFile);
         byte[] bytes = multipartUtility.finish();
