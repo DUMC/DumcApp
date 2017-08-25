@@ -94,18 +94,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         loginButton.setOnClickListener(this);
     }
 
-    public boolean isInternetAvailable()
-    {
-        try {
-            InetAddress ipAddr = InetAddress.getByName("google.com");
-            return !ipAddr.equals("");
-
-        } catch (Exception e) {
-            return false;
-        }
-
-    }
-
     @Override
     public void onClick(View v)
     {
